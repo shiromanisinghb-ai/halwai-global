@@ -1,0 +1,381 @@
+
+<h2 class="sr-only">Halwai Global — interactive catering platform demo with role selection, OTP login, customer dashboard, and halwai vendor dashboard.</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary);background:var(--color-background-tertiary)}
+.scr{display:none;flex-direction:column;min-height:580px}.scr.on{display:flex}
+.hdr{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-size:16px;font-weight:500;color:#B85018}.logo span{color:#7A1515}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px}
+.btn{border:0.5px solid var(--color-border-secondary);background:transparent;border-radius:var(--border-radius-md);padding:6px 14px;font-size:13px;cursor:pointer;color:var(--color-text-primary)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-p{background:#B85018;color:#fff;border:none;border-radius:var(--border-radius-md);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-bottom:8px}
+.btn-p:hover{background:#914012}
+.input{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 11px;font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);margin-bottom:4px}
+.input:focus{outline:none;border-color:#B85018;box-shadow:0 0 0 2px rgba(184,80,24,0.12)}
+.lbl{font-size:12px;color:var(--color-text-secondary);font-weight:500;display:block;margin-bottom:5px;margin-top:10px}
+.err{font-size:11px;color:#A32D2D;margin-bottom:8px;display:none}
+.otp-row{display:flex;gap:7px;justify-content:center;margin:10px 0}
+.otp-slot{width:40px;height:40px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);text-align:center;font-size:17px;font-weight:500;background:var(--color-background-primary);color:var(--color-text-primary)}
+.otp-slot:focus{outline:none;border-color:#B85018;box-shadow:0 0 0 2px rgba(184,80,24,0.12)}
+.link{background:none;border:none;color:#B85018;cursor:pointer;font-size:12px;text-decoration:underline;padding:0}
+.divx{display:flex;align-items:center;gap:8px;margin:12px 0}
+.divx::before,.divx::after{content:'';flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.divx span{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:500}
+.stat-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.tabs{display:flex;gap:2px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:3px;margin-bottom:12px}
+.tab{flex:1;padding:5px;font-size:12px;border:none;background:none;border-radius:6px;cursor:pointer;color:var(--color-text-secondary)}
+.tab.on{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500}
+.tc{display:none}.tc.on{display:block}
+.mg{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px}
+.orow{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:11px;margin-bottom:9px}
+.oamt{font-size:13px;font-weight:500}
+.ometa{font-size:11px;color:var(--color-text-secondary);margin:4px 0 6px}
+.pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.pill{background:#FEF3E2;color:#854F0B;border-radius:20px;padding:2px 8px;font-size:11px}
+.oacts{display:flex;gap:6px}
+.bsm{padding:4px 10px;font-size:12px;border:0.5px solid var(--color-border-secondary);background:transparent;border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-primary)}
+.bsm:hover{background:var(--color-background-secondary)}
+.bacc{background:#1E6B1E;color:#fff;border-color:#1E6B1E}.bacc:hover{background:#175217}
+.brej{color:#A32D2D;border-color:#F09595}.brej:hover{background:#FCEBEB}
+.bdg{display:inline-block;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500;margin-left:4px}
+.b-ok{background:#EAF3DE;color:#27500A}.b-pend{background:#FAEEDA;color:#633806}.b-done{background:#E6F1FB;color:#0C447C}.b-rej{background:#FCEBEB;color:#791F1F}
+.pcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;text-align:center;margin-bottom:12px}
+.ava{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;margin:0 auto 10px}
+.ava-c{background:#EAF3DE;color:#27500A}.ava-h{background:#FCEBEB;color:#791F1F}
+.qbtn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 11px;border:0.5px solid var(--color-border-secondary);background:transparent;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;margin-bottom:7px;color:var(--color-text-primary);text-align:left}
+.qbtn:hover{background:var(--color-background-secondary)}
+.promo{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-left:3px solid #B85018;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:12px;margin-bottom:12px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:420px;width:100%;margin:0 auto}
+.rcard{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px;cursor:pointer;text-align:center;background:var(--color-background-primary)}
+.rcard:hover,.rcard.sel{border-color:#B85018;background:var(--color-background-secondary)}
+.bar-wrap{display:flex;align-items:flex-end;gap:6px;height:66px;margin-bottom:4px}
+.bar{flex:1;border-radius:3px 3px 0 0;opacity:.72}
+.blbls{display:flex;gap:6px}.blbls span{flex:1;text-align:center;font-size:10px;color:var(--color-text-secondary)}
+.bstat{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.bstat:last-child{border:none}
+.toast{position:fixed;bottom:14px;right:14px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:13px;z-index:99;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;max-width:230px}
+.toast.ok{border-left:3px solid #639922}.toast.er{border-left:3px solid #E24B4A}.toast.sh{opacity:1;transform:translateY(0)}
+.prog{display:flex;gap:5px;margin-bottom:18px}
+.prog div{flex:1;height:3px;border-radius:2px;background:var(--color-border-tertiary)}.prog div.on{background:#B85018}
+.spec-tag{display:inline-flex;align-items:center;gap:4px;background:#FEF3E2;border:0.5px solid #EF9F27;border-radius:20px;padding:3px 9px;font-size:12px;color:#854F0B;margin:3px}
+.spec-tag button{background:none;border:none;cursor:pointer;color:#854F0B;font-size:13px;line-height:1;padding:0}
+</style>
+
+<div id="s-role" class="scr on">
+  <div class="hdr"><div class="logo">Halwai <span>Global</span></div></div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--color-background-secondary)">
+    <div style="text-align:center;margin-bottom:22px">
+      <span style="display:inline-block;background:#FEF3E2;border:0.5px solid #EF9F27;border-radius:20px;padding:4px 14px;font-size:11px;color:#854F0B;margin-bottom:10px">Welcome to Halwai Global</span>
+      <div style="font-size:21px;font-weight:500;margin-bottom:6px">Join as a <span style="color:#B85018">customer</span> or <span style="color:#7A1515">halwai</span></div>
+      <div style="font-size:13px;color:var(--color-text-secondary)">Choose your account type to get started</div>
+    </div>
+    <div class="role-grid">
+      <button class="rcard" onclick="pickRole('customer',this)">
+        <div style="width:46px;height:46px;border-radius:50%;background:#EAF3DE;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#27500A;margin:0 auto 10px">C</div>
+        <div style="font-weight:500;font-size:14px;margin-bottom:5px">I'm a customer</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Book authentic Halwai for weddings, parties and events</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);text-align:left;line-height:1.9">✓ Browse verified Halwai<br>✓ AI-powered event planning<br>✓ Secure payments &amp; tracking</div>
+      </button>
+      <button class="rcard" onclick="pickRole('halwai',this)">
+        <div style="width:46px;height:46px;border-radius:50%;background:#FCEBEB;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#791F1F;margin:0 auto 10px">H</div>
+        <div style="font-weight:500;font-size:14px;margin-bottom:5px">I'm a Halwai</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Grow your catering business and reach customers globally</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);text-align:left;line-height:1.9">✓ Professional profile<br>✓ Manage menu &amp; pricing<br>✓ Analytics dashboard</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="s-login" class="scr">
+  <div class="hdr"><div class="logo">Halwai <span>Global</span></div></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--color-background-secondary)">
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:26px;width:100%;max-width:340px">
+      <button class="link" style="margin-bottom:12px;display:block" onclick="go('s-role')">← Back to role selection</button>
+      <span id="role-badge" style="display:inline-block;background:#FEF3E2;border:0.5px solid #EF9F27;border-radius:20px;padding:3px 11px;font-size:11px;color:#854F0B;margin-bottom:12px">Customer login</span>
+      <div style="font-size:19px;font-weight:500;margin-bottom:3px">Welcome back!</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Sign in to continue to your account</div>
+
+      <div id="ph-step">
+        <label class="lbl" style="margin-top:0">Mobile number</label>
+        <input class="input" type="tel" id="ph-inp" placeholder="+91 98765 43210" />
+        <div class="err" id="ph-err">Enter a valid 10-digit mobile number</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px">We'll send you a one-time password</div>
+        <button class="btn-p" onclick="sendOTP()">Send OTP</button>
+      </div>
+
+      <div id="otp-step" style="display:none">
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Code sent to <strong id="ph-show"></strong> <span style="color:#B85018">(demo: 123456)</span></div>
+        <div class="otp-row">
+          <input class="otp-slot" maxlength="1" id="o0" oninput="onav(this,0)" />
+          <input class="otp-slot" maxlength="1" id="o1" oninput="onav(this,1)" />
+          <input class="otp-slot" maxlength="1" id="o2" oninput="onav(this,2)" />
+          <input class="otp-slot" maxlength="1" id="o3" oninput="onav(this,3)" />
+          <input class="otp-slot" maxlength="1" id="o4" oninput="onav(this,4)" />
+          <input class="otp-slot" maxlength="1" id="o5" oninput="onav(this,5)" />
+        </div>
+        <button class="link" style="margin-bottom:10px" onclick="chPhone()">Change phone number</button><br>
+        <button class="btn-p" onclick="verOTP()">Verify and login</button>
+        <button class="btn" style="width:100%;font-size:12px" onclick="sendOTP()">Resend OTP</button>
+      </div>
+
+      <div class="divx"><span>or</span></div>
+      <button class="btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px" onclick="gLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-top:12px">Don't have an account? <button class="link" onclick="toast('Registration coming soon!','ok')">Create one</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="s-setup" class="scr">
+  <div class="hdr"><div class="logo">Halwai <span>Global</span></div><button class="btn" onclick="skipSetup()">Skip for now</button></div>
+  <div style="flex:1;display:flex;align-items:flex-start;justify-content:center;padding:20px;background:var(--color-background-secondary)">
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:24px;width:100%;max-width:420px">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:17px;font-weight:500;margin-bottom:3px">Setup your Halwai profile</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">Let's set up your catering business</div>
+      </div>
+      <div class="prog" id="prog"><div class="on"></div><div></div><div></div></div>
+
+      <div id="ss1">
+        <label class="lbl" style="margin-top:0">Shop / business name *</label>
+        <input class="input" type="text" id="s-shop" placeholder="e.g. Gupta Sweets &amp; Catering" />
+        <label class="lbl">Years of experience *</label>
+        <input class="input" type="number" id="s-exp" min="0" max="80" placeholder="e.g. 15" />
+        <label class="lbl">Business description *</label>
+        <textarea class="input" id="s-desc" rows="3" style="resize:vertical" placeholder="Tell customers about your business…"></textarea>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px" id="desc-hint">At least 20 characters required</div>
+        <button class="btn-p" onclick="sNext(1)">Continue →</button>
+      </div>
+
+      <div id="ss2" style="display:none">
+        <label class="lbl" style="margin-top:0">Street address *</label>
+        <input class="input" type="text" id="s-addr" placeholder="e.g. 123 Main Street" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="lbl">City *</label><input class="input" type="text" id="s-city" placeholder="Mumbai" /></div>
+          <div><label class="lbl">State *</label><input class="input" type="text" id="s-state" placeholder="Maharashtra" /></div>
+        </div>
+        <label class="lbl">Country</label>
+        <select class="input" id="s-country"><option>India</option><option>USA</option><option>UAE</option><option>UK</option><option>Canada</option></select>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" onclick="setStep(1)">Back</button>
+          <button class="btn-p" style="flex:1;margin:0" onclick="sNext(2)">Continue →</button>
+        </div>
+      </div>
+
+      <div id="ss3" style="display:none">
+        <label class="lbl" style="margin-top:0">Specialties *</label>
+        <div style="display:flex;gap:7px;margin-bottom:7px">
+          <input class="input" style="flex:1;margin:0" type="text" id="s-spec" placeholder="e.g. Wedding catering" onkeydown="if(event.key==='Enter'){event.preventDefault();addSpec()}" />
+          <button class="btn" onclick="addSpec()">Add</button>
+        </div>
+        <div id="spec-tags" style="margin-bottom:8px"></div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px">Press Enter or click Add</div>
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">After setup you can add menu items, set availability and start receiving orders.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="setStep(2)">Back</button>
+          <button class="btn-p" style="flex:1;margin:0" onclick="sSubmit()">Complete setup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s-cdash" class="scr">
+  <div class="hdr">
+    <div style="font-size:15px;font-weight:500">Welcome, <span style="color:#B85018" id="c-uname">Priya</span>!</div>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+  <div style="flex:1;padding:14px;overflow-y:auto">
+    <div class="stats-row">
+      <div class="stat"><div class="stat-lbl">Total bookings</div><div class="stat-val">12</div></div>
+      <div class="stat"><div class="stat-lbl">Upcoming events</div><div class="stat-val">2</div></div>
+      <div class="stat" data-testid="stat-favourites"><div class="stat-lbl">Favourites</div><div class="stat-val">5</div></div>
+      <div class="stat"><div class="stat-lbl">Total spent</div><div class="stat-val">₹2.55L</div></div>
+    </div>
+    <div class="mg">
+      <div>
+        <div class="tabs">
+          <button class="tab on" data-testid="tab-overview" onclick="ctab('ct-ov',this)">Overview</button>
+          <button class="tab" data-testid="tab-orders" onclick="ctab('ct-ord',this)">My orders</button>
+          <button class="tab" data-testid="tab-favourites" onclick="ctab('ct-fav',this)">Favourites</button>
+        </div>
+        <div class="tc on" id="ct-ov">
+          <div class="promo">
+            <div style="font-size:13px;font-weight:500;margin-bottom:4px">Become a Halwai partner</div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Share your culinary skills and grow your catering business globally</div>
+            <button class="btn" style="font-size:12px;padding:5px 12px" onclick="toast('Redirecting to Halwai registration…','ok')">Start your journey</button>
+          </div>
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px">Recent orders</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Your latest bookings</div><div id="cov-list"></div></div>
+        </div>
+        <div class="tc" id="ct-ord"><div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px">All orders</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">View and manage all your bookings</div><div id="cord-list"></div></div></div>
+        <div class="tc" id="ct-fav">
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px">Favourite Halwai</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Your saved vendors</div>
+            <div class="orow" style="display:flex;gap:10px;align-items:center">
+              <div style="width:42px;height:42px;border-radius:var(--border-radius-md);background:#FEF3E2;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🍬</div>
+              <div><div style="font-weight:500;font-size:13px">Gupta Sweets &amp; Catering</div><div style="font-size:11px;color:var(--color-text-secondary)">★ 4.8 · Mumbai, India</div><span class="bdg b-ok" style="margin-left:0">Wedding catering</span></div>
+            </div>
+            <div class="orow" style="display:flex;gap:10px;align-items:center">
+              <div style="width:42px;height:42px;border-radius:var(--border-radius-md);background:#FAEEDA;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧁</div>
+              <div><div style="font-weight:500;font-size:13px">Delhi Delights</div><div style="font-size:11px;color:var(--color-text-secondary)">★ 4.9 · Delhi, India</div><span class="bdg b-pend" style="margin-left:0">Traditional sweets</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="pcard">
+          <div class="ava ava-c" id="c-ava">PS</div>
+          <div style="font-weight:500;font-size:14px" id="c-pnm">Priya Sharma</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:3px">priya@example.com</div>
+          <span class="bdg b-ok" style="margin:6px 0 0 0;display:inline-block">Customer account</span>
+          <button class="btn" style="width:100%;margin-top:10px;font-size:12px" onclick="toast('Edit profile coming soon!','ok')">Edit profile</button>
+        </div>
+        <div class="card">
+          <div style="font-weight:500;font-size:13px;margin-bottom:10px">Quick actions</div>
+          <button class="qbtn" onclick="toast('Opening vendor discovery…','ok')"><span style="font-size:16px">📍</span> Find Halwai near me</button>
+          <button class="qbtn" onclick="toast('Opening AI event planner…','ok')"><span style="font-size:16px">📅</span> Plan an event</button>
+          <button class="qbtn" onclick="toast('Support chat coming soon!','ok')"><span style="font-size:16px">💬</span> Support chat</button>
+          <button class="qbtn" onclick="toast('No new notifications','ok')"><span style="font-size:16px">🔔</span> Notifications</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s-hdash" class="scr">
+  <div class="hdr">
+    <div style="font-size:15px;font-weight:500"><span style="color:#B85018" data-testid="shop-name" id="h-shop">Gupta Sweets</span> dashboard</div>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+  <div style="flex:1;padding:14px;overflow-y:auto">
+    <div class="stats-row">
+      <div class="stat"><div class="stat-lbl">Total revenue</div><div class="stat-val">₹11.1L</div><div class="stat-sub" style="color:#27500A">+23% last month</div></div>
+      <div class="stat"><div class="stat-lbl">Total orders</div><div class="stat-val">140</div><div class="stat-sub" style="color:#27500A">+12% last month</div></div>
+      <div class="stat" data-testid="stat-pending"><div class="stat-lbl">Pending orders</div><div class="stat-val" id="pend-cnt">2</div><div class="stat-sub" style="color:#633806">Needs attention</div></div>
+      <div class="stat" data-testid="stat-rating"><div class="stat-lbl">Rating</div><div class="stat-val" data-testid="rating-value">4.8 ★</div><div class="stat-sub">156 reviews</div></div>
+    </div>
+    <div class="mg">
+      <div>
+        <div class="tabs">
+          <button class="tab on" onclick="htab('ht-ov',this)">Overview</button>
+          <button class="tab" onclick="htab('ht-ord',this)">Orders</button>
+          <button class="tab" onclick="htab('ht-menu',this)">Menu</button>
+          <button class="tab" onclick="htab('ht-an',this)">Analytics</button>
+        </div>
+        <div class="tc on" id="ht-ov">
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:10px">Revenue trend (₹L)</div><div class="bar-wrap" id="rchart"></div><div class="blbls" id="rlbl"></div></div>
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px">Recent orders</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Latest booking requests</div><div id="hov-list"></div></div>
+        </div>
+        <div class="tc" id="ht-ord"><div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px">All orders</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Manage booking requests</div><div id="hall-list"></div></div></div>
+        <div class="tc" id="ht-menu">
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:3px" data-testid="menu-heading">Menu items</div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Manage your products and pricing</div><div id="menu-list"></div><button class="btn" style="font-size:12px;margin-top:4px" onclick="toast('Add menu item coming soon!','ok')">+ Add item</button></div>
+        </div>
+        <div class="tc" id="ht-an">
+          <div class="card"><div style="font-weight:500;font-size:13px;margin-bottom:8px">Revenue analytics (₹L)</div><div class="bar-wrap" id="achart"></div><div class="blbls" id="albl"></div></div>
+          <div class="card" style="margin-top:10px"><div style="font-weight:500;font-size:13px;margin-bottom:8px">Orders analytics</div><div class="bar-wrap" id="ochart"></div><div class="blbls" id="olbl"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="pcard">
+          <div class="ava ava-h" id="h-ava">GS</div>
+          <div style="font-weight:500;font-size:14px" data-testid="sidebar-shop-name" id="h-shop-nm">Gupta Sweets &amp; Catering</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:3px">Ramesh Gupta · Mumbai</div>
+          <div style="margin-top:6px"><span class="bdg b-ok" style="margin-left:0">Halwai partner</span> <span class="bdg b-done">✓ Verified</span></div>
+          <div style="font-size:11px;color:var(--color-text-secondary);text-align:left;margin-top:10px;line-height:2">
+            <div style="display:flex;justify-content:space-between"><span>Experience</span><span>25 years</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Location</span><span>Mumbai</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Rating</span><span>4.8 ★</span></div>
+          </div>
+          <button class="btn" style="width:100%;margin-top:10px;font-size:12px" onclick="toast('Edit profile coming soon!','ok')">Edit profile</button>
+        </div>
+        <div class="card">
+          <div style="font-weight:500;font-size:13px;margin-bottom:8px">Business status</div>
+          <div class="bstat"><span style="color:var(--color-text-secondary)">Availability</span><span class="bdg b-ok" style="margin:0">Open</span></div>
+          <div class="bstat"><span style="color:var(--color-text-secondary)">Menu items</span><span style="font-weight:500">4</span></div>
+          <div class="bstat"><span style="color:var(--color-text-secondary)">Pending orders</span><span style="font-weight:500;color:#633806" id="act-cnt">2</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-el" class="toast"></div>
+
+<script>
+var role='customer', specs=[], halwaiOrders=[
+  {id:'ORD-001',cust:'Rajesh Kumar',type:'Wedding',date:'20 May 2026',guests:500,status:'pending',amt:150000,items:['Gulab Jamun','Jalebi','Samosa','Paneer Tikka']},
+  {id:'ORD-002',cust:'Priya Sharma',type:'Birthday',date:'25 Apr 2026',guests:50,status:'confirmed',amt:25000,items:['Rasmalai','Kaju Katli','Ladoo']},
+  {id:'ORD-003',cust:'Tech Corp Ltd',type:'Corporate',date:'15 Jun 2026',guests:200,status:'pending',amt:80000,items:['Samosa','Pakora','Chai']}
+], custOrders=[
+  {id:'ORD-001',cust:'Gupta Sweets & Catering',type:'Wedding',date:'20 May 2026',guests:500,status:'confirmed',amt:150000,items:['Gulab Jamun','Jalebi','Samosa']},
+  {id:'ORD-002',cust:'Mumbai Mithai House',type:'Birthday',date:'25 Apr 2026',guests:50,status:'pending',amt:25000,items:['Rasmalai','Kaju Katli']},
+  {id:'ORD-003',cust:'Royal Caterers',type:'Corporate',date:'10 Mar 2026',guests:200,status:'completed',amt:80000,items:['Samosa','Pakora','Chai']}
+], menuItems=[
+  {nm:'Gulab Jamun',cat:'Sweets',price:250,unit:'per kg',avail:true},
+  {nm:'Jalebi',cat:'Sweets',price:200,unit:'per kg',avail:true},
+  {nm:'Wedding Package',cat:'Catering',price:300,unit:'per person',avail:true},
+  {nm:'Samosa',cat:'Snacks',price:150,unit:'per dozen',avail:false}
+], revData=[120,150,180,220,190,250], ordData=[15,18,22,28,25,32], months=['Jan','Feb','Mar','Apr','May','Jun'];
+
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on')}
+function toast(msg,type){var el=document.getElementById('toast-el');el.textContent=msg;el.className='toast '+type+' sh';clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('sh'),3000)}
+function inr(n){return '₹'+n.toLocaleString('en-IN')}
+
+function pickRole(r,el){role=r;document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');document.getElementById('role-badge').textContent=r==='customer'?'Customer login':'Halwai login';document.getElementById('ph-step').style.display='block';document.getElementById('otp-step').style.display='none';['o0','o1','o2','o3','o4','o5'].forEach(id=>{document.getElementById(id).value=''});setTimeout(()=>go('s-login'),180)}
+
+function sendOTP(){var ph=document.getElementById('ph-inp').value.replace(/\D/g,'');if(ph.length<10){var e=document.getElementById('ph-err');e.style.display='block';return}document.getElementById('ph-err').style.display='none';document.getElementById('ph-show').textContent=document.getElementById('ph-inp').value;document.getElementById('ph-step').style.display='none';document.getElementById('otp-step').style.display='block';toast('OTP sent! Demo code: 123456','ok')}
+function chPhone(){document.getElementById('ph-step').style.display='block';document.getElementById('otp-step').style.display='none'}
+function onav(el,i){if(el.value.length===1&&i<5)document.getElementById('o'+(i+1)).focus()}
+function getOTP(){return ['o0','o1','o2','o3','o4','o5'].map(id=>document.getElementById(id).value).join('')}
+function verOTP(){var otp=getOTP();if(otp.length!==6){toast('Enter the 6-digit OTP','er');return}if(otp!=='123456'){toast('Invalid OTP — use 123456 for demo','er');return}toast('Login successful!','ok');setTimeout(()=>{if(role==='customer'){go('s-cdash');renderCDash()}else{go('s-setup')}},450)}
+function gLogin(){toast('Login successful!','ok');setTimeout(()=>{if(role==='customer'){go('s-cdash');renderCDash()}else{go('s-setup')}},450)}
+function logout(){go('s-role');toast('Logged out successfully','ok')}
+
+function ctab(id,btn){document.querySelectorAll('#s-cdash .tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('#s-cdash .tc').forEach(t=>t.classList.remove('on'));document.getElementById(id).classList.add('on')}
+function htab(id,btn){document.querySelectorAll('#s-hdash .tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('#s-hdash .tc').forEach(t=>t.classList.remove('on'));document.getElementById(id).classList.add('on')}
+
+function bdg(s){var m={pending:'b-pend',confirmed:'b-ok',completed:'b-done',rejected:'b-rej'};return '<span class="bdg '+(m[s]||'')+'">'+s+'</span>'}
+function renderOrds(cid,ords,showAct){
+  document.getElementById(cid).innerHTML=ords.map(o=>`
+    <div class="orow">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <span style="font-weight:500;font-size:13px">${o.cust||o.customer||o.nm||''}${bdg(o.status)}</span>
+        <span class="oamt">${inr(o.amt)}</span>
+      </div>
+      <div class="ometa">${o.id} · ${o.type} · ${o.guests} guests · ${o.date}</div>
+      <div class="pills">${o.items.map(i=>`<span class="pill">${i}</span>`).join('')}</div>
+      <div class="oacts">
+        <button class="bsm">View details</button>
+        ${showAct && o.status==='pending'?`<button class="bsm bacc" onclick="accOrd('${o.id}')">✓ Accept</button><button class="bsm brej" onclick="rejOrd('${o.id}')">✕ Reject</button>`:''}
+        ${!showAct && o.status==='confirmed'?`<button class="bsm" onclick="toast('Contact feature coming soon!','ok')">Contact Halwai</button>`:''}
+        ${!showAct && o.status==='completed'?`<button class="bsm" onclick="toast('Review submitted!','ok')">Leave review</button>`:''}
+      </div>
+    </div>`).join('')
+}
+function accOrd(id){halwaiOrders=halwaiOrders.map(o=>o.id===id?{...o,status:'confirmed'}:o);upPend();renderOrds('hov-list',halwaiOrders.slice(0,3),true);renderOrds('hall-list',halwaiOrders,true);toast('Order accepted!','ok')}
+function rejOrd(id){halwaiOrders=halwaiOrders.map(o=>o.id===id?{...o,status:'rejected'}:o);upPend();renderOrds('hov-list',halwaiOrders.slice(0,3),true);renderOrds('hall-list',halwaiOrders,true);toast('Order rejected','er')}
+function upPend(){var n=halwaiOrders.filter(o=>o.status==='pending').length;document.getElementById('pend-cnt').textContent=n;document.getElementById('act-cnt').textContent=n}
+
+function renderBar(cid,lid,data,color){var mx=Math.max(...data);document.getElementById(cid).innerHTML=data.map(v=>`<div class="bar" style="height:${Math.round((v/mx)*62)}px;background:${color}"></div>`).join('');document.getElementById(lid).innerHTML=months.map(m=>`<span>${m}</span>`).join('')}
+function renderMenu(){document.getElementById('menu-list').innerHTML=menuItems.map(item=>`<div class="orow" style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-weight:500;font-size:13px">${item.nm}</span><span class="bdg b-done">${item.cat}</span><span class="bdg ${item.avail?'b-ok':'b-rej'}">${item.avail?'Available':'Out of stock'}</span><div style="font-size:11px;color:var(--color-text-secondary);margin-top:3px">${inr(item.price)} ${item.unit}</div></div><button class="bsm" onclick="toast('Edit feature coming soon!','ok')">Edit</button></div>`).join('')}
+
+function renderCDash(){renderOrds('cov-list',custOrders,false);renderOrds('cord-list',custOrders,false)}
+function renderHDash(){renderOrds('hov-list',halwaiOrders.slice(0,3),true);renderOrds('hall-list',halwaiOrders,true);renderMenu();renderBar('rchart','rlbl',revData,'#B85018');renderBar('achart','albl',revData,'#B85018');renderBar('ochart','olbl',ordData,'#7A1515')}
+
+function setStep(n){[1,2,3].forEach(i=>{document.getElementById('ss'+i).style.display=i===n?'block':'none';document.getElementById('prog').children[i-1].classList.toggle('on',i<=n)})}
+function sNext(s){
+  if(s===1){var sh=document.getElementById('s-shop').value.trim(),ex=parseInt(document.getElementById('s-exp').value),ds=document.getElementById('s-desc').value.trim();if(sh.length<3){toast('Shop name needs at least 3 characters','er');return}if(isNaN(ex)||ex<0){toast('Enter valid years of experience','er');return}if(ds.length<20){toast('Description needs at least 20 characters','er');return}setStep(2)}
+  else if(s===2){var a=document.getElementById('s-addr').value.trim(),c=document.getElementById('s-city').value.trim(),st=document.getElementById('s-state').value.trim();if(!a||!c||!st){toast('Please fill all location details','er');return}setStep(3)}
+}
+function addSpec(){var v=document.getElementById('s-spec').value.trim();if(!v)return;if(specs.includes(v)){toast('Already added','er');return}specs.push(v);document.getElementById('s-spec').value='';renderSpecs()}
+function renderSpecs(){document.getElementById('spec-tags').innerHTML=specs.map((s,i)=>`<span class="spec-tag">${s}<button onclick="specs.splice(${i},1);renderSpecs()">×</button></span>`).join('')}
+function skipSetup(){var sh=document.getElementById('s-shop').value.trim()||'Gupta Sweets';document.getElementById('h-shop').textContent=sh;document.getElementById('h-shop-nm').textContent=sh;renderHDash();go('s-hdash')}
+function sSubmit(){if(specs.length===0){toast('Add at least one specialty','er');return}var sh=document.getElementById('s-shop').value.trim();document.getElementById('h-shop').textContent=sh;document.getElementById('h-shop-nm').textContent=sh;toast('Profile created!','ok');setTimeout(()=>{renderHDash();go('s-hdash')},500)}
+document.getElementById('s-desc').addEventListener('input',function(){var l=this.value.trim().length;document.getElementById('desc-hint').textContent=l<20?`At least 20 characters (${l}/20)`:'Looks good!'})
+</script>
